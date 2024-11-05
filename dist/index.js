@@ -34,10 +34,42 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
 const dataBaseInit = new databaseInit_1.DataBaseInit();
 const eventsAPI = new api_1.EventsAPI();
+const sportsAPI = new api_1.SportsAPI();
+const teamsAPI = new api_1.TeamsAPI();
 dataBaseInit.createDatabaseConnection();
 app.use(express_1.default.json());
 app.use('/', express_1.default.static(path.join(__dirname, 'Frontend')));
-//api call to get all sports events that are saved inside of th databse
+//Teams api get calls
+app.get('/api/teams/:id', (req, res) => {
+    if (!dataBaseInit.isConnectionValid()) {
+        console.log("Connection to database was lost");
+        return;
+    }
+    teamsAPI.getTeamById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedTeam) => {
+        if (!receivedTeam) {
+            res.status(500).send("Not found");
+            return;
+        }
+        res.json(receivedTeam);
+    });
+});
+//Teams api calls end
+//Sports get api calls
+app.get('/api/sports/:id', (req, res) => {
+    if (!dataBaseInit.isConnectionValid()) {
+        console.log("Connection to database was lost");
+        return;
+    }
+    sportsAPI.getSportById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedSport) => {
+        if (!receivedSport) {
+            res.status(500).send("Not found");
+            return;
+        }
+        res.json(receivedSport);
+    });
+});
+//Sports get api calls end
+//Events api calls to get all sports events that are saved inside of th databse
 app.get('/api/events', (req, res) => {
     if (!dataBaseInit.isConnectionValid()) {
         console.log("Connection to database was lost");

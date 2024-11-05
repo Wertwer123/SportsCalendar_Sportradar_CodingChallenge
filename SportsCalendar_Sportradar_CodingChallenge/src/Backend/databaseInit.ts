@@ -10,7 +10,7 @@ export class DataBaseInit{
         database: "events_db"
     }
 
-    isConnectionValid() :boolean
+    isConnectionValid() : boolean
     {
         return this.mysqlConnection != null;
     }

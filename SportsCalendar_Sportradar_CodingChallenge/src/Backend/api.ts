@@ -1,6 +1,18 @@
-import {Connection } from "mysql2/promise";
+import {Connection, QueryResult, RowDataPacket } from "mysql2/promise";
 
-export interface SportEvent
+interface Team extends RowDataPacket
+{
+    id: number;
+    name: string;
+}
+
+interface Sport extends RowDataPacket
+{
+    id: number;
+    name: string;
+};
+
+interface SportEvent extends RowDataPacket
 {
     id: number;
     dateTime: Date;
@@ -9,32 +21,67 @@ export interface SportEvent
     team_2_Id: number;
     venue_Id: number;
     description: string;
-}
+};
 
 
-export class EventsAPI{
 
-    public getSportEventById(connection: Connection | null, id : number) : SportEvent{
-        return {
-            id : id,
-            dateTime: new Date(),
-            sport_Id: 0,
-             team_1_Id: 0,
-              team_2_Id: 0,
-               venue_Id: 0,
-                description: ""};
+export class TeamsAPI
+{
+    public async getTeamById(connection: Connection | null, id: number) : Promise<Team | null>{
+
+        if(!connection){
+            return null;
+        }
+
+        const query = "SELECT * FROM teams WHERE id = " + id;
+        const [result] = await connection.query<Team[]>(query);
+
+        return result[0];
     }
 
-    public async getSportEvents(connection: Connection | null) : Promise<SportEvent[]>{
+}
+
+export class SportsAPI
+{
+    public async getSportById(connection: Connection | null, id: number) : Promise<Sport | null>{
 
         if(!connection){
             console.log("Lost connection to the data base")
-            return new Promise<SportEvent[]>(() =>{});
+            return null;
+        }
+
+        const query = "SELECT * FROM sports WHERE id = " + id;
+        const [result] = await connection.query<Sport[]>(query);
+       
+        return result[0];
+    }
+};
+
+export class EventsAPI{
+
+    public async getSportEventById(connection: Connection | null, id : number) : Promise<SportEvent | null>{
+
+        if(!connection){
+            console.log("Lost connection to the data base")
+            return null;
+        }
+
+        const query = "SELECT * FROM events WHERE id = " + id;
+        const [result] = await connection.query<SportEvent[]>(query);
+    
+        return result[0];
+    }
+
+    public async getSportEvents(connection: Connection | null) : Promise<SportEvent[] | null>{
+
+        if(!connection){
+            console.log("Lost connection to the data base")
+            return null;
         }
 
         const query = "SELECT * FROM events;"; 
-        const result = await connection.query(query);
+        const [result] = await connection.query<SportEvent[]>(query);
 
-        return result[0] as SportEvent[];
+        return result;
     } 
 };
