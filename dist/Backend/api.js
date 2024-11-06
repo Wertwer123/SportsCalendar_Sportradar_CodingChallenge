@@ -9,14 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EventsAPI = exports.SportsAPI = exports.TeamsAPI = void 0;
+exports.EventsAPI = exports.SportsAPI = exports.TeamsAPI = exports.VenuesAPI = void 0;
 ;
 ;
+class VenuesAPI {
+    getVenueById(connection, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!connection) {
+                return Promise.reject();
+            }
+            const query = "SELECT * FROM venues WHERE id = " + id;
+            const [result] = yield connection.query(query);
+            return result[0];
+        });
+    }
+}
+exports.VenuesAPI = VenuesAPI;
 class TeamsAPI {
     getTeamById(connection, id) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!connection) {
-                return null;
+                return Promise.reject();
             }
             const query = "SELECT * FROM teams WHERE id = " + id;
             const [result] = yield connection.query(query);
@@ -30,7 +43,7 @@ class SportsAPI {
         return __awaiter(this, void 0, void 0, function* () {
             if (!connection) {
                 console.log("Lost connection to the data base");
-                return null;
+                return Promise.reject();
             }
             const query = "SELECT * FROM sports WHERE id = " + id;
             const [result] = yield connection.query(query);
@@ -45,7 +58,7 @@ class EventsAPI {
         return __awaiter(this, void 0, void 0, function* () {
             if (!connection) {
                 console.log("Lost connection to the data base");
-                return null;
+                return Promise.reject();
             }
             const query = "SELECT * FROM events WHERE id = " + id;
             const [result] = yield connection.query(query);
@@ -56,7 +69,7 @@ class EventsAPI {
         return __awaiter(this, void 0, void 0, function* () {
             if (!connection) {
                 console.log("Lost connection to the data base");
-                return null;
+                return Promise.reject();
             }
             const query = "SELECT * FROM events;";
             const [result] = yield connection.query(query);

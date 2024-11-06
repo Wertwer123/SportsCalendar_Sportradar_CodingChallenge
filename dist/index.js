@@ -36,13 +36,30 @@ const dataBaseInit = new databaseInit_1.DataBaseInit();
 const eventsAPI = new api_1.EventsAPI();
 const sportsAPI = new api_1.SportsAPI();
 const teamsAPI = new api_1.TeamsAPI();
+const venuesAPI = new api_1.VenuesAPI();
 dataBaseInit.createDatabaseConnection();
 app.use(express_1.default.json());
 app.use('/', express_1.default.static(path.join(__dirname, 'Frontend')));
+//Venues api get calls
+app.get('/api/venues/:id', (req, res) => {
+    if (!dataBaseInit.isConnectionValid()) {
+        res.status(503).send("Connection Invalid");
+        return;
+    }
+    venuesAPI.getVenueById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedVenue) => {
+        if (!receivedVenue) {
+            res.status(500).send("Not found");
+            return;
+        }
+        console.log(receivedVenue);
+        res.json(receivedVenue);
+    });
+});
+//Venues api get calls
 //Teams api get calls
 app.get('/api/teams/:id', (req, res) => {
     if (!dataBaseInit.isConnectionValid()) {
-        console.log("Connection to database was lost");
+        res.status(503).send("Connection Invalid");
         return;
     }
     teamsAPI.getTeamById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedTeam) => {
@@ -57,7 +74,7 @@ app.get('/api/teams/:id', (req, res) => {
 //Sports get api calls
 app.get('/api/sports/:id', (req, res) => {
     if (!dataBaseInit.isConnectionValid()) {
-        console.log("Connection to database was lost");
+        res.status(503).send("Connection Invalid");
         return;
     }
     sportsAPI.getSportById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedSport) => {

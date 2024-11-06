@@ -1,4 +1,4 @@
-import { Connection, ConnectionOptions, createConnection } from "mysql2/promise";
+import { Connection, ConnectionOptions, createPool} from "mysql2/promise";
 
 //Class that holds out mysql connection and offers utility checks for if we still have a valid connection
 //and establishing a connection
@@ -28,7 +28,7 @@ export class DataBaseInit{
 
     private async establishDatabaseConnection() : Promise<Connection>{
 
-        const connection = await createConnection(this.access);
+        const connection = await createPool(this.access);
     
         return connection;   
     }

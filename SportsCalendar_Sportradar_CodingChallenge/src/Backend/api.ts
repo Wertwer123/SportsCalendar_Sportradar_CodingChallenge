@@ -1,5 +1,12 @@
 import {Connection, QueryResult, RowDataPacket } from "mysql2/promise";
 
+interface Venue extends RowDataPacket
+{
+    id: number;
+    name: string;
+    location: string;
+}
+
 interface Team extends RowDataPacket
 {
     id: number;
@@ -23,14 +30,28 @@ interface SportEvent extends RowDataPacket
     description: string;
 };
 
+export class VenuesAPI
+{
+    public async getVenueById(connection: Connection | null, id: number) : Promise<Venue>{
 
+        if(!connection){
+
+            return Promise.reject();
+        }
+
+        const query = "SELECT * FROM venues WHERE id = " + id;
+        const [result] = await connection.query<Venue[]>(query);
+        
+        return result[0];
+    }
+}
 
 export class TeamsAPI
 {
-    public async getTeamById(connection: Connection | null, id: number) : Promise<Team | null>{
+    public async getTeamById(connection: Connection | null, id: number) : Promise<Team>{
 
         if(!connection){
-            return null;
+            return Promise.reject();
         }
 
         const query = "SELECT * FROM teams WHERE id = " + id;
@@ -47,7 +68,7 @@ export class SportsAPI
 
         if(!connection){
             console.log("Lost connection to the data base")
-            return null;
+            return Promise.reject();
         }
 
         const query = "SELECT * FROM sports WHERE id = " + id;
@@ -63,7 +84,7 @@ export class EventsAPI{
 
         if(!connection){
             console.log("Lost connection to the data base")
-            return null;
+            return Promise.reject();
         }
 
         const query = "SELECT * FROM events WHERE id = " + id;
@@ -76,7 +97,7 @@ export class EventsAPI{
 
         if(!connection){
             console.log("Lost connection to the data base")
-            return null;
+            return Promise.reject();
         }
 
         const query = "SELECT * FROM events;"; 

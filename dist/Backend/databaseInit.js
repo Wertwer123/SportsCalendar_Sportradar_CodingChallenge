@@ -34,7 +34,7 @@ class DataBaseInit {
     }
     establishDatabaseConnection() {
         return __awaiter(this, void 0, void 0, function* () {
-            const connection = yield (0, promise_1.createConnection)(this.access);
+            const connection = yield (0, promise_1.createPool)(this.access);
             return connection;
         });
     }

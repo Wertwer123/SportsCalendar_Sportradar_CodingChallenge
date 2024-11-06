@@ -1,3 +1,10 @@
+interface Venue
+{
+    id: number;
+    name: string;
+    location: string;
+}
+
 interface Team
 {
     id: number;
@@ -21,14 +28,22 @@ interface SportEvent
     description: string;
 }
 
-const sportEventListItemEntryClassName: string = "sportEventListItemEntry";
-const sportEventsList = document.getElementById("SportsEventList");
+const sportEventsList: HTMLTableElement = document.getElementById("SportsEventList") as HTMLTableElement;
+
+async function getVenueById(id: number) : Promise<Venue> {
+    
+    const response = await fetch(`/api/venues/${id}`, {
+        method: "GET",
+    });
+   
+    return response.json();
+}
 
 async function getTeamById(id:number) : Promise<Team> {
     
     const response = await fetch(`/api/teams/${id}`, {
-        method: "GET"
-    })
+        method: "GET",
+    });
 
     return response.json();
 }
@@ -36,7 +51,7 @@ async function getTeamById(id:number) : Promise<Team> {
 async function getSportById(id: number) : Promise<Sport>{
     
     const response = await fetch(`/api/sports/${id}`, {
-        method: "GET"
+        method: "GET",
     });
     
     if(response.status == 500){
@@ -59,12 +74,18 @@ async function getAllSportEvents() : Promise<SportEvent[]>{
 function createSportsEventListElement(sportEvent: SportEvent)
 {
     //Creat a new list entry for the sport event
-    const listItem = document.createElement('li');
-    const sportEventDate = document.createElement('span');
-    const sportEventDescritpion = document.createElement('span');
-    const playedSport = document.createElement('span');
-    const team1 = document.createElement('span');
-    const team2 = document.createElement('span');
+    const listItem = document.createElement('tr');
+    const sportEventDate = document.createElement('td');
+    const sportEventLocation = document.createElement('td');
+    const sportEventDescritpion = document.createElement('td');
+    const playedSport = document.createElement('td');
+    const team1 = document.createElement('td');
+    const team2 = document.createElement('td');
+   
+    getVenueById(sportEvent.venue_Id).then((venue: Venue) => {
+        
+        sportEventLocation.innerText = venue.name;
+    });
 
     getSportById(sportEvent.sport_Id).then((sport: Sport) => {
 
@@ -72,10 +93,12 @@ function createSportsEventListElement(sportEvent: SportEvent)
     });
 
     getTeamById(sportEvent.team_1_Id).then((receivedTeam1: Team) => {
+        
         team1.innerText = receivedTeam1.name;
     });
 
     getTeamById(sportEvent.team_2_Id).then((receivedTeam2: Team) => {
+        
         team2.innerText = receivedTeam2.name;
     });
 
@@ -95,15 +118,9 @@ function createSportsEventListElement(sportEvent: SportEvent)
     sportEventDate.innerText = formattedDate.toString();
     sportEventDescritpion.innerText = sportEvent.description.toString();
 
-
-    sportEventDate.classList.add(sportEventListItemEntryClassName);
-    sportEventDescritpion.classList.add(sportEventListItemEntryClassName);
-    playedSport.classList.add(sportEventListItemEntryClassName);
-    team1.classList.add(sportEventListItemEntryClassName);
-    team2.classList.add(sportEventListItemEntryClassName);
-    sportEventDescritpion.classList.add(sportEventListItemEntryClassName);
-
+    listItem.classList.add("sportsEventTableRow");
     listItem.appendChild(sportEventDate);
+    listItem.appendChild(sportEventLocation);
     listItem.appendChild(sportEventDescritpion);
     listItem.appendChild(playedSport);
     listItem.appendChild(team1);

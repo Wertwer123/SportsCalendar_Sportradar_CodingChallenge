@@ -1,6 +1,6 @@
 import express, { Express, Request, Response , Application } from 'express';
 import * as path from 'path';
-import { EventsAPI, SportsAPI, TeamsAPI } from './Backend/api';
+import { EventsAPI, SportsAPI, TeamsAPI, VenuesAPI } from './Backend/api';
 import { DataBaseInit } from './Backend/databaseInit';
 
 const app: Application = express();
@@ -9,6 +9,7 @@ const dataBaseInit = new DataBaseInit();
 const eventsAPI = new EventsAPI();
 const sportsAPI = new SportsAPI();
 const teamsAPI = new TeamsAPI();
+const venuesAPI = new VenuesAPI();
 
 
 dataBaseInit.createDatabaseConnection();
@@ -16,11 +17,34 @@ dataBaseInit.createDatabaseConnection();
 app.use(express.json());
 app.use('/', express.static(path.join(__dirname, 'Frontend')));
 
+//Venues api get calls
+
+app.get('/api/venues/:id', (req: Request, res: Response) => {
+
+    if(!dataBaseInit.isConnectionValid()){
+        res.status(503).send("Connection Invalid");
+        return;
+    }
+
+    venuesAPI.getVenueById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedVenue) =>{
+        
+        if(!receivedVenue){
+            res.status(500).send("Not found");
+            return;
+        }
+        console.log(receivedVenue);
+        res.json(receivedVenue);
+
+    });
+})
+
+//Venues api get calls
+
 //Teams api get calls
 app.get('/api/teams/:id', (req: Request, res: Response) => {
 
     if(!dataBaseInit.isConnectionValid()){
-        console.log("Connection to database was lost")
+        res.status(503).send("Connection Invalid");
         return;
     }
 
@@ -32,7 +56,7 @@ app.get('/api/teams/:id', (req: Request, res: Response) => {
         }
 
         res.json(receivedTeam);
-    })
+    });
 
 })
 
@@ -43,7 +67,7 @@ app.get('/api/teams/:id', (req: Request, res: Response) => {
 app.get('/api/sports/:id', (req: Request, res: Response) =>{
 
     if(!dataBaseInit.isConnectionValid()){
-        console.log("Connection to database was lost")
+        res.status(503).send("Connection Invalid");
         return;
     }
 
@@ -55,7 +79,7 @@ app.get('/api/sports/:id', (req: Request, res: Response) =>{
         }
 
         res.json(receivedSport);
-    })
+    });
 })
 //Sports get api calls end
 

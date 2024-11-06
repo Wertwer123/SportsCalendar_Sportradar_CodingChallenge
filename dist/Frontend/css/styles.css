@@ -1,20 +1,4 @@
-/* Reset default list styling */
-ul, ol {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Make list items display in a row */
-.horizontal-list {
-  display: flex; /* Flexbox layout for horizontal alignment */
-  flex-direction: column;
-}
-
-.horizontal-list li {
-  margin: 10px; /* Adds space between items */
-}
-
-.sportEventListItemEntry{
-  margin: 10px;
+.sportsEventTableRow td
+{
+  padding: 10px;
 }
