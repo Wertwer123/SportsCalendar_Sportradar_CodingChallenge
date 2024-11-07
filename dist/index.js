@@ -29,40 +29,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path = __importStar(require("path"));
 const api_1 = require("./Backend/api");
-const databaseInit_1 = require("./Backend/databaseInit");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
-const dataBaseInit = new databaseInit_1.DataBaseInit();
 const eventsAPI = new api_1.EventsAPI();
 const sportsAPI = new api_1.SportsAPI();
 const teamsAPI = new api_1.TeamsAPI();
 const venuesAPI = new api_1.VenuesAPI();
-dataBaseInit.createDatabaseConnection();
 app.use(express_1.default.json());
-app.use('/', express_1.default.static(path.join(__dirname, 'Frontend')));
+app.use("/", express_1.default.static(path.join(__dirname, "Frontend")));
 //Venues api get calls
-app.get('/api/venues/:id', (req, res) => {
-    if (!dataBaseInit.isConnectionValid()) {
-        res.status(503).send("Connection Invalid");
-        return;
-    }
-    venuesAPI.getVenueById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedVenue) => {
+app.get("/api/venues/:id", (req, res) => {
+    venuesAPI.getVenueById(parseInt(req.params.id)).then((receivedVenue) => {
         if (!receivedVenue) {
             res.status(500).send("Not found");
             return;
         }
-        console.log(receivedVenue);
         res.json(receivedVenue);
     });
 });
 //Venues api get calls
 //Teams api get calls
-app.get('/api/teams/:id', (req, res) => {
-    if (!dataBaseInit.isConnectionValid()) {
-        res.status(503).send("Connection Invalid");
-        return;
-    }
-    teamsAPI.getTeamById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedTeam) => {
+app.get("/api/teams/:id", (req, res) => {
+    teamsAPI.getTeamById(parseInt(req.params.id)).then((receivedTeam) => {
         if (!receivedTeam) {
             res.status(500).send("Not found");
             return;
@@ -72,12 +60,8 @@ app.get('/api/teams/:id', (req, res) => {
 });
 //Teams api calls end
 //Sports get api calls
-app.get('/api/sports/:id', (req, res) => {
-    if (!dataBaseInit.isConnectionValid()) {
-        res.status(503).send("Connection Invalid");
-        return;
-    }
-    sportsAPI.getSportById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)).then((receivedSport) => {
+app.get("/api/sports/:id", (req, res) => {
+    sportsAPI.getSportById(parseInt(req.params.id)).then((receivedSport) => {
         if (!receivedSport) {
             res.status(500).send("Not found");
             return;
@@ -86,21 +70,29 @@ app.get('/api/sports/:id', (req, res) => {
     });
 });
 //Sports get api calls end
-//Events api calls to get all sports events that are saved inside of th databse
-app.get('/api/events', (req, res) => {
-    if (!dataBaseInit.isConnectionValid()) {
-        console.log("Connection to database was lost");
-        return;
-    }
-    eventsAPI.getSportEvents(dataBaseInit.getDataBaseConnection()).then((recievedEvents) => {
+//Events api get calls
+app.get("/api/events", (req, res) => {
+    eventsAPI.getSportEvents().then((recievedEvents) => {
         res.json(recievedEvents);
     });
 });
-app.get('/api/events/:id', (req, res) => {
-    if (!dataBaseInit.isConnectionValid()) {
-        return;
-    }
-    res.json(eventsAPI.getSportEventById(dataBaseInit.getDataBaseConnection(), parseInt(req.params.id)));
+app.get("/api/events/:id", (req, res) => {
+    eventsAPI.getSportEventById(parseInt(req.params.id)).then((recievedEvent) => {
+        res.json(recievedEvent);
+    });
+});
+//events api get calls end
+//events api insert calls
+app.post("/api/events", (req, res) => {
+    eventsAPI
+        .addSportEvent(req.body)
+        .then((addedSportEvent) => {
+        res.status(200).json(addedSportEvent);
+    })
+        .catch((error) => {
+        res.status(500).json(error);
+        console.error(error);
+    });
 });
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);

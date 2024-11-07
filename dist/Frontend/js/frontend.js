@@ -8,7 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const sportEventsList = document.getElementById("SportsEventList");
+const addEventButton = document.getElementById("AddEventButton");
+const sportEventsList = document.getElementById("SportsEventTable");
+addEventButton.addEventListener("click", addSportEvent);
 function getVenueById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield fetch(`/api/venues/${id}`, {
@@ -46,24 +48,40 @@ function getAllSportEvents() {
 }
 function createSportsEventListElement(sportEvent) {
     //Creat a new list entry for the sport event
-    const listItem = document.createElement('tr');
-    const sportEventDate = document.createElement('td');
-    const sportEventLocation = document.createElement('td');
-    const sportEventDescritpion = document.createElement('td');
-    const playedSport = document.createElement('td');
-    const team1 = document.createElement('td');
-    const team2 = document.createElement('td');
-    getVenueById(sportEvent.venue_Id).then((venue) => {
+    const listItem = document.createElement("tr");
+    const sportEventDate = document.createElement("td");
+    const sportEventLocation = document.createElement("td");
+    const sportEventDescritpion = document.createElement("td");
+    const playedSport = document.createElement("td");
+    const team1 = document.createElement("td");
+    const team2 = document.createElement("td");
+    getVenueById(sportEvent.venue_Id)
+        .then((venue) => {
         sportEventLocation.innerText = venue.name;
+    })
+        .catch((error) => {
+        console.error(error);
     });
-    getSportById(sportEvent.sport_Id).then((sport) => {
+    getSportById(sportEvent.sport_Id)
+        .then((sport) => {
         playedSport.innerText = sport.name;
+    })
+        .catch((error) => {
+        console.error(error);
     });
-    getTeamById(sportEvent.team_1_Id).then((receivedTeam1) => {
+    getTeamById(sportEvent.team_1_Id)
+        .then((receivedTeam1) => {
         team1.innerText = receivedTeam1.name;
+    })
+        .catch((error) => {
+        console.error(error);
     });
-    getTeamById(sportEvent.team_2_Id).then((receivedTeam2) => {
+    getTeamById(sportEvent.team_2_Id)
+        .then((receivedTeam2) => {
         team2.innerText = receivedTeam2.name;
+    })
+        .catch((error) => {
+        console.error(error);
     });
     const date = new Date(sportEvent.dateTime.toString());
     //Format the date to a more readable format
@@ -87,6 +105,46 @@ function createSportsEventListElement(sportEvent) {
     listItem.appendChild(team2);
     //Add the finished list element to our display list
     sportEventsList === null || sportEventsList === void 0 ? void 0 : sportEventsList.appendChild(listItem);
+}
+function addSportEvent() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const eventToAdd = {
+            id: 0,
+            dateTime: new Date(),
+            sport_Id: 2,
+            team_1_Id: 2,
+            team_2_Id: 2,
+            venue_Id: 1,
+            description: "TestAdd",
+        };
+        const response = yield fetch("/api/events", {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            method: "POST",
+            body: JSON.stringify(eventToAdd),
+        });
+        reloadSportEventsList();
+        return response.json();
+    });
+}
+function reloadSportEventsList() {
+    for (let index = sportEventsList.rows.length - 1; index > 1; index--) {
+        const tableRowToRemove = sportEventsList.rows.item(index);
+        if (!tableRowToRemove) {
+            continue;
+        }
+        sportEventsList.removeChild(tableRowToRemove);
+    }
+    getAllSportEvents().then((events) => {
+        if (!sportEventsList) {
+            return;
+        }
+        events.forEach((sportEvent) => {
+            createSportsEventListElement(sportEvent);
+        });
+    });
 }
 getAllSportEvents().then((events) => {
     if (!sportEventsList) {
