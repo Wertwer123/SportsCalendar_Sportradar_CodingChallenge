@@ -82,7 +82,7 @@ app.get("/api/events/:id", (req, res) => {
     });
 });
 //events api get calls end
-//events api insert calls
+//events api insert/remove calls
 app.post("/api/events", (req, res) => {
     eventsAPI
         .addSportEvent(req.body)
@@ -93,6 +93,10 @@ app.post("/api/events", (req, res) => {
         res.status(500).json(error);
         console.error(error);
     });
+});
+app.delete("/api/events/:id", (req, res) => {
+    eventsAPI.removeSportEvent(parseInt(req.params.id));
+    res.status(200).json();
 });
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);

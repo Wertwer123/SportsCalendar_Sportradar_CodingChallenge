@@ -86,21 +86,32 @@ class EventsAPI {
     }
     addSportEvent(event) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = "INSERT INTO events (dateTime, sport_Id, team_1_Id, team_2_Id, venue_Id, description) VALUES(?, ?, ?, ?, ?, ?)";
+            const query = "INSERT INTO events (dateTime, _sport_Id, _team_1_Id, _team_2_Id, _venue_Id, description) VALUES(?, ?, ?, ?, ?, ?)";
             const connection = yield databaseInit_1.default.getDataBaseConnection();
             if (!connection) {
                 return Promise.reject();
             }
             const [inserted] = yield connection.execute(query, [
                 event.dateTime,
-                event.sport_Id,
-                event.team_1_Id,
-                event.team_2_Id,
-                event.venue_Id,
+                event._sport_Id,
+                event._team_1_Id,
+                event._team_2_Id,
+                event._venue_Id,
                 event.description,
             ]);
             connection.release();
             return this.getSportEventById(inserted.insertId);
+        });
+    }
+    removeSportEvent(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = "DELETE FROM events WHERE id = ?";
+            const connection = yield databaseInit_1.default.getDataBaseConnection();
+            if (!connection) {
+                return Promise.reject();
+            }
+            connection.execute(query, [id]);
+            connection.release();
         });
     }
 }

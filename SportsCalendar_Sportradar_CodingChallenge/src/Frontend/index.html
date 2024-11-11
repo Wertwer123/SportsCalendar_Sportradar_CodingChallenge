@@ -5,20 +5,33 @@
     </head>
 
     <body>
-        <h1>Sports Calendar</h1>
-        <button id = "AddEventButton">Add Event</button>
-        <table id="SportsEventTable">
-            <tr>
-                <th>Date</th>
-                <th>Location</th>
-                <th>Description</th>
-                <th>Sport</th>
-                <th>Team 1</th>
-                <th>Team 2</th>
-            </tr>
+        <h1 class="leftAlignedHeading">Sports Calendar</h1>
+        <div class="gridContainer">
+            <table id="sportsEventTable" class="sportsEventTable sportsEventTableGridItem" >
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th>Sport</th>
+                        <th>Team 1</th>
+                        <th>Team 2</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="sportsEventTableBody">
+    
+                </tbody>
+    
+            </table>
 
-        </table>
-       
+            <button id = "AddEventButton" class="addEventButtonGridItem">Add Event</button>
+            <div class="dateFilterGridItem"> 
+                <label for="date" >Date:</label>
+                <input type="month" id="date" name="date">
+            </div>
+        </div>
+        
         <script src="js/frontend.js"></script>
     </body>
 </html>

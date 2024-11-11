@@ -20,10 +20,10 @@ interface Sport extends RowDataPacket {
 interface SportEvent extends RowDataPacket {
   id: number;
   dateTime: Date;
-  sport_Id: number;
-  team_1_Id: number;
-  team_2_Id: number;
-  venue_Id: number;
+  _sport_Id: number;
+  _team_1_Id: number;
+  _team_2_Id: number;
+  _venue_Id: number;
   description: string;
 }
 
@@ -101,7 +101,7 @@ export class EventsAPI {
 
   public async addSportEvent(event: SportEvent): Promise<SportEvent> {
     const query =
-      "INSERT INTO events (dateTime, sport_Id, team_1_Id, team_2_Id, venue_Id, description) VALUES(?, ?, ?, ?, ?, ?)";
+      "INSERT INTO events (dateTime, _sport_Id, _team_1_Id, _team_2_Id, _venue_Id, description) VALUES(?, ?, ?, ?, ?, ?)";
     const connection = await db.getDataBaseConnection();
 
     if (!connection) {
@@ -110,15 +110,27 @@ export class EventsAPI {
 
     const [inserted] = await connection.execute<ResultSetHeader>(query, [
       event.dateTime,
-      event.sport_Id,
-      event.team_1_Id,
-      event.team_2_Id,
-      event.venue_Id,
+      event._sport_Id,
+      event._team_1_Id,
+      event._team_2_Id,
+      event._venue_Id,
       event.description,
     ]);
 
     connection.release();
     
     return this.getSportEventById(inserted.insertId);
+  }
+  public async removeSportEvent(id: number)
+  {
+    const query = "DELETE FROM events WHERE id = ?";
+    const connection = await db.getDataBaseConnection();
+
+    if(!connection){
+      return Promise.reject();
+    }
+
+    connection.execute<ResultSetHeader>(query, [id]);
+    connection.release();
   }
 }

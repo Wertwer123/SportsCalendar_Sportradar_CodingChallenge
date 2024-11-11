@@ -69,7 +69,7 @@ app.get("/api/events/:id", (req: Request, res: Response) => {
 
 //events api get calls end
 
-//events api insert calls
+//events api insert/remove calls
 
 app.post("/api/events", (req: Request, res: Response) => {
   
@@ -83,6 +83,11 @@ app.post("/api/events", (req: Request, res: Response) => {
       console.error(error);
     });
 });
+
+app.delete("/api/events/:id", (req: Request, res: Response) => {
+  eventsAPI.removeSportEvent(parseInt(req.params.id));
+  res.status(200).json();
+})
 
 app.listen(port, () => {
   console.log(`Server is Fire at http://localhost:${port}`);
