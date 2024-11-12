@@ -6,6 +6,24 @@
 
     <body>
         <h1 class="leftAlignedHeading">Sports Calendar</h1>
+        <div class="horizontalLayout">
+            <div>
+                <link> Home </link>
+            </div>
+            <div>
+                <link> About </link>
+            </div>
+            <div>
+                <link> Company </link>
+            </div>
+        </div>
+        <div class="dateFilterGridItem"> 
+            <label for="date" >Date:</label>
+            <input type="month" id="date" name="date">
+            <label for="useFilters">Use Filters ?</label>
+            <input type="checkbox" id="useFilters" name="useFilters">
+        </div>
+        
         <div class="gridContainer">
             <table id="sportsEventTable" class="sportsEventTable sportsEventTableGridItem" >
                 <thead>
@@ -26,10 +44,7 @@
             </table>
 
             <button id = "AddEventButton" class="addEventButtonGridItem">Add Event</button>
-            <div class="dateFilterGridItem"> 
-                <label for="date" >Date:</label>
-                <input type="month" id="date" name="date">
-            </div>
+           
         </div>
         
         <script src="js/frontend.js"></script>

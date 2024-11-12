@@ -1,31 +1,7 @@
-import { Connection, QueryResult, ResultSetHeader, RowDataPacket } from "mysql2/promise";
+import {ResultSetHeader} from "mysql2/promise";
+import { Venue, Team, Sport, SportEvent} from "./types";
 import db from "./databaseInit";
 
-interface Venue extends RowDataPacket {
-  id: number;
-  name: string;
-  location: string;
-}
-
-interface Team extends RowDataPacket {
-  id: number;
-  name: string;
-}
-
-interface Sport extends RowDataPacket {
-  id: number;
-  name: string;
-}
-
-interface SportEvent extends RowDataPacket {
-  id: number;
-  dateTime: Date;
-  _sport_Id: number;
-  _team_1_Id: number;
-  _team_2_Id: number;
-  _venue_Id: number;
-  description: string;
-}
 
 export class VenuesAPI {
   public async getVenueById(id: number): Promise<Venue> {

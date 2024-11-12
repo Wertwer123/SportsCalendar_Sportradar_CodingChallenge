@@ -8,12 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+;
+;
+;
+;
+//document elements cached and initial operations
 const addEventButton = document.getElementById("AddEventButton");
 const sportsEventTable = document.getElementById("sportsEventTable");
 const sportEventsTableBody = document.getElementById("sportsEventTableBody");
+const useFiltersCheckBox = document.getElementById("useFilters");
 const filterDate = document.getElementById('date');
+useFiltersCheckBox.addEventListener("change", onUseFiltersChanged);
 filterDate.addEventListener("change", filterEventsByDate);
 addEventButton.addEventListener("click", addSportEvent);
+//document elements end
 //Get functions
 function getVenueById(id) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -64,9 +72,14 @@ function createSportsEventListElement(id, sportEvent) {
     const removeEventButton = document.createElement("button");
     removeEventElement.appendChild(removeEventButton);
     //Save the sport events id inside of the button to be able to remove the element from the database
-    removeEventButton.value = id.toString();
-    removeEventButton.innerHTML = "-";
-    removeEventButton.addEventListener("click", removeSportEvent);
+    removeEventButton.innerHTML = "X";
+    removeEventButton.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch(`/api/events/${id}`, {
+            method: "DELETE"
+        });
+        sportEventsTableBody === null || sportEventsTableBody === void 0 ? void 0 : sportEventsTableBody.removeChild(tableItem);
+        reloadSportEventsList(useFiltersCheckBox.checked);
+    }));
     getVenueById(sportEvent._venue_Id)
         .then((venue) => {
         sportEventLocation.innerText = venue.name;
@@ -108,6 +121,7 @@ function createSportsEventListElement(id, sportEvent) {
     });
     sportEventDate.innerText = formattedDate.toString();
     sportEventDescritpion.innerText = sportEvent.description.toString();
+    removeEventButton.classList.add("removeButton");
     tableItem.appendChild(sportEventDate);
     tableItem.appendChild(sportEventLocation);
     tableItem.appendChild(sportEventDescritpion);
@@ -121,6 +135,7 @@ function createSportsEventListElement(id, sportEvent) {
 //Add/remove events
 function addSportEvent() {
     return __awaiter(this, void 0, void 0, function* () {
+        //default filled with random data by me
         const eventToAdd = {
             id: 0,
             dateTime: new Date(Date.now()),
@@ -138,26 +153,17 @@ function addSportEvent() {
             method: "POST",
             body: JSON.stringify(eventToAdd),
         });
-        reloadSportEventsList(true);
+        reloadSportEventsList(useFiltersCheckBox.checked);
         return response.json();
     });
 }
+//function thats bound to the minus button of the sport table element
 function removeSportEvent(mouseEvent) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
         const clickedButton = mouseEvent.target;
-        const parentTableItem = (_a = clickedButton.parentElement) === null || _a === void 0 ? void 0 : _a.parentElement;
-        console.log(clickedButton.value);
-        const response = yield fetch(`/api/events/${clickedButton.value}`, {
-            method: "DELETE"
-        });
-        if (parentTableItem) {
-            //take the parent element of our parent element because the button sits inside a table data element
-            sportEventsTableBody === null || sportEventsTableBody === void 0 ? void 0 : sportEventsTableBody.removeChild(clickedButton.parentElement.parentElement);
-        }
-        reloadSportEventsList(true);
     });
 }
+//Clears all elements from the events list
 function clearSportsEventTable() {
     for (let index = sportsEventTable.rows.length - 1; index >= 1; index--) {
         const tableRowToRemove = sportsEventTable.rows.item(index);
@@ -169,11 +175,13 @@ function clearSportsEventTable() {
 }
 function reloadSportEventsList(isDateFilterSelected) {
     clearSportsEventTable();
-    //If we have a choosen date just display the events for the choosen date
+    //If we want to filter by date only display the events for the chosen data
     if (isDateFilterSelected) {
+        console.log("applied filters");
         filterEventsByDate();
         return;
     }
+    //else just display all elements and reset the date picker 
     getAllSportEvents().then((events) => {
         if (!sportsEventTable) {
             return;
@@ -187,8 +195,15 @@ function reloadSportEventsList(isDateFilterSelected) {
 }
 //Add events end
 //Filter events
+function onUseFiltersChanged() {
+    console.log(useFiltersCheckBox.checked);
+    reloadSportEventsList(useFiltersCheckBox.checked);
+}
 function filterEventsByDate() {
     return __awaiter(this, void 0, void 0, function* () {
+        if (!useFiltersCheckBox.checked) {
+            return;
+        }
         clearSportsEventTable();
         getAllSportEvents().then((events) => {
             if (!sportsEventTable) {
@@ -208,4 +223,7 @@ function filterEventsByDate() {
     });
 }
 //Filter events end
+//Execute on Load
+reloadSportEventsList(false);
+//Execute on Load end
 //# sourceMappingURL=frontend.js.map

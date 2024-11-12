@@ -2,17 +2,17 @@ interface Venue {
   id: number;
   name: string;
   location: string;
-}
+};
 
 interface Team {
   id: number;
   name: string;
-}
+};
 
 interface Sport {
   id: number;
   name: string;
-}
+};
 
 interface SportEvent {
   id: number;
@@ -22,8 +22,9 @@ interface SportEvent {
   _team_2_Id: number;
   _venue_Id: number;
   description: string;
-}
+};
 
+//document elements cached and initial operations
 const addEventButton: HTMLButtonElement = document.getElementById(
   "AddEventButton"
 ) as HTMLButtonElement;
@@ -32,10 +33,14 @@ const sportsEventTable: HTMLTableElement = document.getElementById(
 ) as HTMLTableElement;
 
 const sportEventsTableBody = document.getElementById("sportsEventTableBody");
+const useFiltersCheckBox: HTMLInputElement = document.getElementById("useFilters") as HTMLInputElement;
 const filterDate = document.getElementById('date') as HTMLInputElement;
 
+useFiltersCheckBox.addEventListener("change", onUseFiltersChanged);
 filterDate.addEventListener("change", filterEventsByDate);
 addEventButton.addEventListener("click", addSportEvent);
+
+//document elements end
 
 //Get functions
 async function getVenueById(id: number): Promise<Venue> {
@@ -89,9 +94,16 @@ function createSportsEventListElement(id: number, sportEvent: SportEvent) {
   removeEventElement.appendChild(removeEventButton);
 
   //Save the sport events id inside of the button to be able to remove the element from the database
-  removeEventButton.value = id.toString();
-  removeEventButton.innerHTML = "-";
-  removeEventButton.addEventListener("click", removeSportEvent)
+  removeEventButton.innerHTML = "X";
+  removeEventButton.addEventListener("click", async () =>{
+    
+    const response = await fetch(`/api/events/${id}`, {
+      method: "DELETE"
+    });
+  
+    sportEventsTableBody?.removeChild(tableItem);
+    reloadSportEventsList(useFiltersCheckBox.checked);
+  })
 
   getVenueById(sportEvent._venue_Id)
     .then((venue: Venue) => {
@@ -141,6 +153,7 @@ function createSportsEventListElement(id: number, sportEvent: SportEvent) {
   sportEventDate.innerText = formattedDate.toString();
   sportEventDescritpion.innerText = sportEvent.description.toString();
 
+  removeEventButton.classList.add("removeButton");
   tableItem.appendChild(sportEventDate);
   tableItem.appendChild(sportEventLocation);
   tableItem.appendChild(sportEventDescritpion);
@@ -156,6 +169,7 @@ function createSportsEventListElement(id: number, sportEvent: SportEvent) {
 //Add/remove events
 async function addSportEvent(): Promise<SportEvent> {
   
+  //default filled with random data by me
   const eventToAdd: SportEvent = {
     id: 0,
     dateTime: new Date(Date.now()),
@@ -175,29 +189,21 @@ async function addSportEvent(): Promise<SportEvent> {
     body: JSON.stringify(eventToAdd),
   });
 
-  reloadSportEventsList(true);
+  reloadSportEventsList(useFiltersCheckBox.checked);
 
   return response.json();
 }
 
+//function thats bound to the minus button of the sport table element
 async function removeSportEvent(mouseEvent: MouseEvent){
 
-  const clickedButton: HTMLButtonElement = mouseEvent.target as HTMLButtonElement
-  const parentTableItem = clickedButton.parentElement?.parentElement;
-  console.log(clickedButton.value);
-  const response = await fetch(`/api/events/${clickedButton.value}`, {
-    method: "DELETE"
-  });
-
-  if(parentTableItem){
-
-    //take the parent element of our parent element because the button sits inside a table data element
-    sportEventsTableBody?.removeChild(clickedButton.parentElement.parentElement);
-  }
-
-  reloadSportEventsList(true);
+  const clickedButton: HTMLButtonElement = mouseEvent.target as HTMLButtonElement;
+  
+  
+  
 }
 
+//Clears all elements from the events list
 function clearSportsEventTable(){
 
   for (let index = sportsEventTable.rows.length - 1; index >= 1; index--) {
@@ -215,13 +221,15 @@ function reloadSportEventsList(isDateFilterSelected: Boolean)
 {
   clearSportsEventTable();
 
-  //If we have a choosen date just display the events for the choosen date
+  //If we want to filter by date only display the events for the chosen data
   if(isDateFilterSelected)
   {
+    console.log("applied filters")
     filterEventsByDate();
     return;
   }
 
+  //else just display all elements and reset the date picker 
   getAllSportEvents().then((events: SportEvent[]) => {
     if (!sportsEventTable) {
       return;
@@ -238,7 +246,17 @@ function reloadSportEventsList(isDateFilterSelected: Boolean)
 //Add events end
 
 //Filter events
+
+function onUseFiltersChanged(){
+  console.log(useFiltersCheckBox.checked);
+  reloadSportEventsList(useFiltersCheckBox.checked);
+}
+
 async function filterEventsByDate(){
+
+  if(!useFiltersCheckBox.checked){
+    return;
+  }
 
   clearSportsEventTable();
 
@@ -266,3 +284,9 @@ async function filterEventsByDate(){
 }
 
 //Filter events end
+
+//Execute on Load
+
+reloadSportEventsList(false);
+
+//Execute on Load end

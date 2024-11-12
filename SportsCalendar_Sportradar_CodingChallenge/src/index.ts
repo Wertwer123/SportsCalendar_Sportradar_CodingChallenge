@@ -63,6 +63,10 @@ app.get("/api/events", (req: Request, res: Response) => {
 
 app.get("/api/events/:id", (req: Request, res: Response) => {
   eventsAPI.getSportEventById(parseInt(req.params.id)).then((recievedEvent) => {
+    if(!recievedEvent){
+      res.status(500).send("Not found");
+      return;
+    }
     res.json(recievedEvent);
   });
 });
