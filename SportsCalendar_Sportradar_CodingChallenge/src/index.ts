@@ -57,6 +57,9 @@ app.get("/api/sports/:id", (req: Request, res: Response) => {
 //Events api get calls
 app.get("/api/events", (req: Request, res: Response) => {
   eventsAPI.getSportEvents().then((recievedEvents) => {
+    if(!recievedEvents){
+      res.status(500).send("Not found")
+    }
     res.json(recievedEvents);
   });
 });
@@ -89,8 +92,15 @@ app.post("/api/events", (req: Request, res: Response) => {
 });
 
 app.delete("/api/events/:id", (req: Request, res: Response) => {
-  eventsAPI.removeSportEvent(parseInt(req.params.id));
-  res.status(200).json();
+  eventsAPI.removeSportEvent(parseInt(req.params.id))
+  .then((removedSportEvent) =>{
+    res.status(200).json(removedSportEvent);
+  })
+  .catch((error) => {
+    res.status(500).json(error);
+    console.error(error);
+  });
+  
 })
 
 app.listen(port, () => {

@@ -194,15 +194,6 @@ async function addSportEvent(): Promise<SportEvent> {
   return response.json();
 }
 
-//function thats bound to the minus button of the sport table element
-async function removeSportEvent(mouseEvent: MouseEvent){
-
-  const clickedButton: HTMLButtonElement = mouseEvent.target as HTMLButtonElement;
-  
-  
-  
-}
-
 //Clears all elements from the events table
 function clearSportsEventTable(){
 
@@ -228,7 +219,7 @@ function reloadSportEventsList(isDateFilterSelected: Boolean)
     return;
   }
 
-  //else just display all elements and reset the date picker 
+  //else just display all elements
   getAllSportEvents().then((events: SportEvent[]) => {
     if (!sportsEventTable) {
       filterDate.value = "";
@@ -286,6 +277,7 @@ async function filterEventsByDate(){
 
 //Execute on Load
 
+//just initialy reload the sport events list without filtering
 reloadSportEventsList(false);
 
 //Execute on Load end

@@ -110,8 +110,9 @@ class EventsAPI {
             if (!connection) {
                 return Promise.reject();
             }
-            connection.execute(query, [id]);
+            const [res] = yield connection.execute(query, [id]);
             connection.release();
+            return res[0];
         });
     }
 }

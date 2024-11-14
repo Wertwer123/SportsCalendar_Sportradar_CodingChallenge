@@ -97,7 +97,7 @@ export class EventsAPI {
     
     return this.getSportEventById(inserted.insertId);
   }
-  public async removeSportEvent(id: number)
+  public async removeSportEvent(id: number): Promise<SportEvent>
   {
     const query = "DELETE FROM events WHERE id = ?";
     const connection = await db.getDataBaseConnection();
@@ -106,7 +106,9 @@ export class EventsAPI {
       return Promise.reject();
     }
 
-    connection.execute<ResultSetHeader>(query, [id]);
+    const [res] = await connection.execute<SportEvent[]>(query, [id]);
     connection.release();
+
+    return res[0]
   }
 }

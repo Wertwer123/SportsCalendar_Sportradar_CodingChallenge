@@ -73,6 +73,9 @@ app.get("/api/sports/:id", (req, res) => {
 //Events api get calls
 app.get("/api/events", (req, res) => {
     eventsAPI.getSportEvents().then((recievedEvents) => {
+        if (!recievedEvents) {
+            res.status(500).send("Not found");
+        }
         res.json(recievedEvents);
     });
 });
@@ -99,8 +102,14 @@ app.post("/api/events", (req, res) => {
     });
 });
 app.delete("/api/events/:id", (req, res) => {
-    eventsAPI.removeSportEvent(parseInt(req.params.id));
-    res.status(200).json();
+    eventsAPI.removeSportEvent(parseInt(req.params.id))
+        .then((removedSportEvent) => {
+        res.status(200).json(removedSportEvent);
+    })
+        .catch((error) => {
+        res.status(500).json(error);
+        console.error(error);
+    });
 });
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);

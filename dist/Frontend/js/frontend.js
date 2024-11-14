@@ -157,12 +157,6 @@ function addSportEvent() {
         return response.json();
     });
 }
-//function thats bound to the minus button of the sport table element
-function removeSportEvent(mouseEvent) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const clickedButton = mouseEvent.target;
-    });
-}
 //Clears all elements from the events table
 function clearSportsEventTable() {
     for (let index = sportsEventTable.rows.length - 1; index >= 1; index--) {
