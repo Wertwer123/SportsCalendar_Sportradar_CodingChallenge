@@ -203,7 +203,7 @@ async function removeSportEvent(mouseEvent: MouseEvent){
   
 }
 
-//Clears all elements from the events list
+//Clears all elements from the events table
 function clearSportsEventTable(){
 
   for (let index = sportsEventTable.rows.length - 1; index >= 1; index--) {
@@ -224,7 +224,6 @@ function reloadSportEventsList(isDateFilterSelected: Boolean)
   //If we want to filter by date only display the events for the chosen data
   if(isDateFilterSelected)
   {
-    console.log("applied filters")
     filterEventsByDate();
     return;
   }
@@ -232,6 +231,7 @@ function reloadSportEventsList(isDateFilterSelected: Boolean)
   //else just display all elements and reset the date picker 
   getAllSportEvents().then((events: SportEvent[]) => {
     if (!sportsEventTable) {
+      filterDate.value = "";
       return;
     }
   
@@ -248,7 +248,6 @@ function reloadSportEventsList(isDateFilterSelected: Boolean)
 //Filter events
 
 function onUseFiltersChanged(){
-  console.log(useFiltersCheckBox.checked);
   reloadSportEventsList(useFiltersCheckBox.checked);
 }
 

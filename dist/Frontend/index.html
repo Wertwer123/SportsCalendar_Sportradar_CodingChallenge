@@ -7,10 +7,23 @@
     <body>
         <h1 class="leftAlignedHeading">Sports Calendar</h1>
         <div class="horizontalLayout">
-            <link> Home </link>
-            <link> Home </link>
-            <link> Home </link>
+            <div>
+                <a style="text-decoration: none; color: white;" href="https://sportradar.com/">Home</a>
+            </div>
+            <div>
+                <a style="text-decoration: none; color: white;" href="https://i.redd.it/5ur1gipu8at61.jpg">Fun</a>
+            </div>
+            <div>
+                <a style="text-decoration: none; color: white;" href="https://sportradar.com/">Company</a>
+            </div>
         </div>
+        <div class="dateFilterGridItem"> 
+            <label for="date" >Date:</label>
+            <input type="month" id="date" name="date">
+            <label for="useFilters">Use Filters ?</label>
+            <input type="checkbox" id="useFilters" name="useFilters">
+        </div>
+        
         <div class="gridContainer">
             <table id="sportsEventTable" class="sportsEventTable sportsEventTableGridItem" >
                 <thead>
@@ -31,12 +44,7 @@
             </table>
 
             <button id = "AddEventButton" class="addEventButtonGridItem">Add Event</button>
-            <div class="dateFilterGridItem"> 
-                <label for="date" >Date:</label>
-                <input type="month" id="date" name="date">
-                <label for="useFilters">Use Filters ?</label>
-                <input type="checkbox" id="useFilters" name="useFilters">
-            </div>
+           
         </div>
         
         <script src="js/frontend.js"></script>

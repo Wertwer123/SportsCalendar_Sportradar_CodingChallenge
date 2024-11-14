@@ -163,7 +163,7 @@ function removeSportEvent(mouseEvent) {
         const clickedButton = mouseEvent.target;
     });
 }
-//Clears all elements from the events list
+//Clears all elements from the events table
 function clearSportsEventTable() {
     for (let index = sportsEventTable.rows.length - 1; index >= 1; index--) {
         const tableRowToRemove = sportsEventTable.rows.item(index);
@@ -177,13 +177,13 @@ function reloadSportEventsList(isDateFilterSelected) {
     clearSportsEventTable();
     //If we want to filter by date only display the events for the chosen data
     if (isDateFilterSelected) {
-        console.log("applied filters");
         filterEventsByDate();
         return;
     }
     //else just display all elements and reset the date picker 
     getAllSportEvents().then((events) => {
         if (!sportsEventTable) {
+            filterDate.value = "";
             return;
         }
         var i = 0;
@@ -196,7 +196,6 @@ function reloadSportEventsList(isDateFilterSelected) {
 //Add events end
 //Filter events
 function onUseFiltersChanged() {
-    console.log(useFiltersCheckBox.checked);
     reloadSportEventsList(useFiltersCheckBox.checked);
 }
 function filterEventsByDate() {

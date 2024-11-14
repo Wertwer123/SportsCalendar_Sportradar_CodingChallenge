@@ -17,7 +17,15 @@
   grid-column: 1;
   grid-row: auto;
   align-self: center;
+  width: 50px;
+  height: 50px;
   margin: 0 45% 0 45%;
+  transform-origin: center center;
+  transition: transform 0.5s;
+}
+
+.addEventButtonGridItem:hover{
+  transform: scale(1.1,1.1);
 }
 
 .dateFilterGridItem
@@ -36,7 +44,7 @@
 .sportsEventTable
 {
   border-collapse: collapse;
-  margin: 25px 0px;
+  margin: 10px 0px;
   font-size: 0.9em;
   min-width: 400px;
 }
@@ -55,15 +63,6 @@
   padding: 12px 15px;
 }
 
-/* CSS */
-.button-31 {
-
-}
-
-.button-31:hover,
-.button-31:focus {
-  opacity: .75;
-}
 .sportsEventTable tbody tr td button
 {
   width: 100%;
@@ -119,9 +118,24 @@
 .horizontalLayout
 {
   display: flex;
-  padding-left: 25px;
+  border-collapse: collapse;
+  background-color: #126e12;
+  width: fit-content;
+  border: solid;
+  border-color: #000000;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
 }
 
-.horizontalLayout link{
-  margin: 10px;
+.horizontalLayout div
+{
+  border: solid;
+  border-color: #000000;
+  border-right: #000000;
+  text-align: center;
+  color: white;
+  width: 100px;
+  height: 20px;
+ 
 }
