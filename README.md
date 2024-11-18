@@ -1,4 +1,3 @@
-SportsCalendar_Sportradar_CodingChallenge
 My calendar has the ability to display sport events that are saved inside of the databse.
 I locally hosted everything with xampp on a my sql database with php my admin.
 I also used node.js to build the project
